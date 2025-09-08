@@ -1,0 +1,28 @@
+.tableCell {
+  padding: 6px;
+  border: 1px solid #86bc25;
+
+  thead & {
+    background-color: #26890d;
+    color: #fff;
+    font-weight: normal;
+    text-align: center !important;
+  }
+
+  tbody & {
+
+  }
+
+  tfoot & {
+    font-weight: bold;
+  }
+}
+
+th.tableCell {
+  font-size: 12px;
+  text-align: left;
+}
+
+td.tableCell {
+  text-align: center;
+}

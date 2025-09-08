@@ -1,0 +1,19 @@
+%button-icon {
+  border: none;
+  background: none;
+  transition: all 0.3s ease;
+  padding: 4px;
+  font-size: 24px;
+  cursor: pointer;
+  color: gray;
+
+  &:hover {
+    color: #222;
+  }
+
+  svg {
+    display: block;
+    width: 24px;
+    height: auto;
+  }
+}

@@ -1,0 +1,19 @@
+@use '@extends' as *;
+
+.tableRow {
+  &:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.12);
+  }
+
+  &Item {
+    cursor: pointer;
+
+    &:hover {
+      background: #f334fa;
+    }
+  }
+}
+
+.removeRow {
+  @extend %button-icon;
+}

@@ -1,0 +1,23 @@
+@use '@extends' as *;
+
+.tableContainer {
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  margin: 1.5em 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.addRow {
+  @extend %button-icon;
+}
+
+.noData {
+  margin: 40px;
+  text-align: center;
+  color: gray;
+}
