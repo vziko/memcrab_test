@@ -2,7 +2,7 @@
 
 This project is a single-page application built with React and TypeScript that allows users to generate and interact with a numerical data matrix. It fulfills all the requirements of the test task, including dynamic calculations, interactive highlighting, and data manipulation.
 
-**Live Demo:** `[ТУТ ВСТАВ ПОСИЛАННЯ НА СВІЙ ЗАДЕПЛОЄНИЙ ПРОЄКТ]`
+**Live Demo:** [memcrab_test](https://vziko.github.io/memcrab_test/)
 
 ---
 
