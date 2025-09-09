@@ -37,9 +37,6 @@ export const FormArguments = () => {
         const checkCols = cols !== null && cols >= MIN_COUNT && cols <= MAX_COUNT;
 
         if(checkRows && checkCols) {
-            /*if(amount !== null && amount > rows * cols) {
-                setAmount(rows * cols)
-            }*/
             generateMatrix();
         }
 

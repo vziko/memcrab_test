@@ -1,10 +1,10 @@
 import styles from './MatrixTable.module.scss';
 import { MatrixTableRow } from "./MatrixTableRow/MatrixTableRow.tsx";
-import { MatrixTableCell } from "./MatrixTableCell/MatrixTableCell.tsx";
+import { TableCell } from "components/ui/tableCell/TableCell.tsx";
 import { useMatrix } from "context/MatrixContext.tsx";
 import { TableCellType } from "enums";
 import { useTablePercentile } from "hooks";
-import { isMatrix } from "utils/isMatrix.ts";
+import { isMatrix } from "utils";
 import IconPlus from 'assets/icons/plus.svg?react';
 
 export const MatrixTable = () => {
@@ -31,18 +31,18 @@ export const MatrixTable = () => {
             <table className={styles.table}>
                 <thead>
                     <tr>
-                        <MatrixTableCell type={TableCellType.TH} />
+                        <TableCell type={TableCellType.TH} />
                         {matrix[0].map((cell, index) => (
-                            <MatrixTableCell key={cell.id} type={TableCellType.TH}>
+                            <TableCell key={cell.id} type={TableCellType.TH}>
                                 Cell values N = {index + 1}
-                            </MatrixTableCell>
+                            </TableCell>
                         ))}
-                        <MatrixTableCell type={TableCellType.TH}>
+                        <TableCell type={TableCellType.TH}>
                             Sum Values
-                        </MatrixTableCell>
-                        <MatrixTableCell type={TableCellType.TH}>
+                        </TableCell>
+                        <TableCell type={TableCellType.TH}>
                             Actions
-                        </MatrixTableCell>
+                        </TableCell>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,18 +56,18 @@ export const MatrixTable = () => {
                 </tbody>
                 <tfoot>
                     <tr>
-                        <MatrixTableCell type={TableCellType.TH}>
+                        <TableCell type={TableCellType.TH}>
                             60th percentile
-                        </MatrixTableCell>
+                        </TableCell>
                         {percentalList.map((value, index) => (
-                            <MatrixTableCell key={index} type={TableCellType.TD}>
+                            <TableCell key={index} type={TableCellType.TD}>
                                 {value}
-                            </MatrixTableCell>
+                            </TableCell>
                         ))}
-                        <MatrixTableCell type={TableCellType.TD}>
+                        <TableCell type={TableCellType.TD}>
                             {totalPercental}
-                        </MatrixTableCell>
-                        <MatrixTableCell type={TableCellType.TD}>
+                        </TableCell>
+                        <TableCell type={TableCellType.TD}>
                             <button
                                 title="Add new row"
                                 className={styles.addRow}
@@ -75,7 +75,7 @@ export const MatrixTable = () => {
                             >
                                 <IconPlus />
                             </button>
-                        </MatrixTableCell>
+                        </TableCell>
                     </tr>
                 </tfoot>
             </table>

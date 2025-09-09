@@ -6,6 +6,14 @@ This project is a single-page application built with React and TypeScript that a
 
 ---
 
+## 📝 The Task
+
+This project was created as a test task for a Frontend Developer position. The original requirements can be found at the link below:
+
+* **[View the original test task description](https://docs.memcrab.com/s/856a01a7-c84c-4753-98e4-ccb1e178b384)**
+
+---
+
 ## ✨ Features
 
 - **Dynamic Matrix Generation:** Create a matrix of any size from 0x0 to 100x100.

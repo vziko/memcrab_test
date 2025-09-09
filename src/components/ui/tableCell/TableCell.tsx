@@ -1,12 +1,12 @@
 import type { ComponentProps } from "react";
-import style from './MatrixTableCell.module.scss';
+import style from './TableCell.module.scss';
 import { TableCellType } from "enums";
 
-interface MatrixTableCellProps extends ComponentProps<'td'> {
+interface TableCellProps extends ComponentProps<'td'> {
     type: TableCellType;
 }
 
-export const MatrixTableCell = (props: MatrixTableCellProps) => {
+export const TableCell = (props: TableCellProps) => {
     const {
         type,
         children,
