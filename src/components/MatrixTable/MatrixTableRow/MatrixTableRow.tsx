@@ -1,5 +1,5 @@
 import styles from './MatrixTableRow.module.scss'
-import { MatrixTableCell } from "../MatrixTableCell/MatrixTableCell.tsx";
+import { TableCell } from "components/ui/tableCell/TableCell.tsx";
 import { TableCellType } from "enums";
 import type { MatrixTableCellTypes } from "types";
 import { useMemo, useState } from "react";
@@ -35,9 +35,9 @@ export const MatrixTableRow = (props: MatrixTableRowProps) => {
 
     return (
         <tr className={styles.tableRow}>
-            <MatrixTableCell type={TableCellType.TH}>
+            <TableCell type={TableCellType.TH}>
                 Cell Value M = {rowIndex + 1}
-            </MatrixTableCell>
+            </TableCell>
             {matrixRow.map((cell, index) =>
                 <RowItem
                     key={cell.id}
@@ -51,21 +51,21 @@ export const MatrixTableRow = (props: MatrixTableRowProps) => {
                     createAmountList={createAmountList}
                 />
             )}
-            <MatrixTableCell
+            <TableCell
                 type={TableCellType.TD}
                 onMouseEnter={() => setIsPercent(true)}
                 onMouseLeave={() => setIsPercent(false)}
             >
                 {sum}
-            </MatrixTableCell>
-            <MatrixTableCell type={TableCellType.TD}>
+            </TableCell>
+            <TableCell type={TableCellType.TD}>
                 <button
                     className={styles.removeRow}
                     onClick={() => removeRow(rowIndex)}
                 >
                     <IconRemove/>
                 </button>
-            </MatrixTableCell>
+            </TableCell>
         </tr>
     )
 }

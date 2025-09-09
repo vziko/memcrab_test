@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import styles from "components/MatrixTable/MatrixTableRow/MatrixTableRow.module.scss";
 import type { MatrixTableCellTypes } from "types";
 import { getCellPercent, getCellPercentBg } from "utils";
-import { MatrixTableCell } from "components/MatrixTable/MatrixTableCell/MatrixTableCell.tsx";
+import { TableCell } from "components/ui/tableCell/TableCell.tsx";
 import { TableCellType } from "enums";
 
 interface RowItemProps {
@@ -38,7 +38,7 @@ export const RowItem = (props: RowItemProps): ReactNode => {
         ...(amountList.some(amountCell => amountCell.id === cell.id) && {background: '#3b79eb'}),
     }
     return (
-        <MatrixTableCell
+        <TableCell
             key={index}
             className={styles.tableRowItem}
             type={TableCellType.TD}
@@ -48,6 +48,6 @@ export const RowItem = (props: RowItemProps): ReactNode => {
             onMouseLeave={() => createAmountList(null)  }
         >
             {value}{isPercent && '%'}
-        </MatrixTableCell>
+        </TableCell>
     )
 }

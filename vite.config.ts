@@ -11,7 +11,7 @@ export default defineConfig(({mode}) => {
     const PORT = `${env.VITE_PORT ?? '3500'}`;
 
     return {
-        base: '/memcrab_test/',
+        base: process.env.GITHUB_ACTIONS ? '/memcrab_test/' : '/',
         plugins: [react(), svgr()],
         server: {
             port: Number(PORT),
