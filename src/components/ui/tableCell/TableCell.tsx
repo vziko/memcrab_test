@@ -1,4 +1,4 @@
-import type { ComponentProps } from "react";
+import { type ComponentProps } from "react";
 import style from './TableCell.module.scss';
 import { TableCellType } from "enums";
 
@@ -32,4 +32,4 @@ export const TableCell = (props: TableCellProps) => {
             {children}
         </td>
     )
-}
+};

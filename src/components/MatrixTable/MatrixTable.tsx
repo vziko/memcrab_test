@@ -1,21 +1,15 @@
 import styles from './MatrixTable.module.scss';
 import { MatrixTableRow } from "./MatrixTableRow/MatrixTableRow.tsx";
 import { TableCell } from "components/ui/tableCell/TableCell.tsx";
-import { useMatrix } from "context/MatrixContext.tsx";
+import { useMatrixTable, useMatrixMethod } from "context/MatrixContext.tsx";
 import { TableCellType } from "enums";
 import { useTablePercentile } from "hooks";
 import { isMatrix } from "utils";
 import IconPlus from 'assets/icons/plus.svg?react';
 
 export const MatrixTable = () => {
-    const {
-        data: {
-            matrix
-        },
-        method: {
-            addRow
-        }
-    } = useMatrix();
+    const { matrix } = useMatrixTable();
+    const { addRow } = useMatrixMethod();
 
     if(!isMatrix(matrix)) {
         return <p className={styles.noData}>not data</p>;

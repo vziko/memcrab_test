@@ -1,4 +1,4 @@
-import type { ChangeEvent, ComponentProps } from "react";
+import { type ChangeEvent, type ComponentProps, memo } from "react";
 import styles from "./Input.module.scss";
 
 interface InputProps extends ComponentProps<'input'> {
@@ -9,7 +9,7 @@ interface InputProps extends ComponentProps<'input'> {
     inputChange: (value: string) => void;
 }
 
-export const Input = (props: InputProps) => {
+export const Input = memo<InputProps>((props) => {
     const {
         name,
         label,
@@ -41,4 +41,4 @@ export const Input = (props: InputProps) => {
             {description && <div className={styles.description}>{description}</div>}
         </div>
     )
-}
+})

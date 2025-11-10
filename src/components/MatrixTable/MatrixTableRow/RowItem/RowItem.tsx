@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { memo, type ReactNode } from "react";
 import styles from "components/MatrixTable/MatrixTableRow/MatrixTableRow.module.scss";
 import type { MatrixTableCellTypes } from "types";
 import { getCellPercent, getCellPercentBg } from "utils";
@@ -16,7 +16,7 @@ interface RowItemProps {
     createAmountList: (cell:  MatrixTableCellTypes | null) => void;
 }
 
-export const RowItem = (props: RowItemProps): ReactNode => {
+export const RowItem = memo<RowItemProps>((props): ReactNode => {
     const {
         cell,
         index,
@@ -37,6 +37,7 @@ export const RowItem = (props: RowItemProps): ReactNode => {
         ...(isPercent && {...getCellPercentBg(value)}),
         ...(amountList.some(amountCell => amountCell.id === cell.id) && {background: '#3b79eb'}),
     }
+
     return (
         <TableCell
             key={index}
@@ -50,4 +51,4 @@ export const RowItem = (props: RowItemProps): ReactNode => {
             {value}{isPercent && '%'}
         </TableCell>
     )
-}
+});
