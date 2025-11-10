@@ -36,14 +36,24 @@ export const MatrixTableRow = (props: MatrixTableRowProps) => {
         removeRow(rowIndex);
     }, [removeRow, rowIndex]);
 
-    const BeforeRow = useMemo(() => (
-        <TableCell type={TableCellType.TH}>
-            Cell Value M = {rowIndex + 1}
-        </TableCell>
-    ), []);
-
-    const AfterRow = useMemo(() => (
-        <>
+    return (
+        <tr className={styles.tableRow}>
+            <TableCell type={TableCellType.TH}>
+                Cell Value M = {rowIndex + 1}
+            </TableCell>
+            {matrixRow.map((cell, index) =>
+                <RowItem
+                    key={cell.id}
+                    cell={cell}
+                    index={index}
+                    isPercent={isPercent}
+                    sum={sum}
+                    rowIndex={rowIndex}
+                    amountList={amountList}
+                    incrementCellAmount={incrementCellAmount}
+                    createAmountList={createAmountList}
+                />
+            )}
             <TableCell
                 type={TableCellType.TD}
                 onMouseEnter={handleSumMouseEnter}
@@ -59,26 +69,6 @@ export const MatrixTableRow = (props: MatrixTableRowProps) => {
                     <IconRemove/>
                 </button>
             </TableCell>
-        </>
-    ), [handleRemoveRow, handleSumMouseEnter, handleSumMouseLeave, sum]);
-
-    return (
-        <tr className={styles.tableRow}>
-            {BeforeRow}
-            {matrixRow.map((cell, index) =>
-                <RowItem
-                    key={cell.id}
-                    cell={cell}
-                    index={index}
-                    isPercent={isPercent}
-                    sum={sum}
-                    rowIndex={rowIndex}
-                    amountList={amountList}
-                    incrementCellAmount={incrementCellAmount}
-                    createAmountList={createAmountList}
-                />
-            )}
-            {AfterRow}
         </tr>
     )
 }
