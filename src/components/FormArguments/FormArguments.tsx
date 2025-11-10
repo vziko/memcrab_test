@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from './FormArguments.module.scss';
 import { Input } from "components/ui/input/Input.tsx";
 import { Button } from "components/ui/button/Button.tsx";
-import { useMatrix } from "context/MatrixContext.tsx";
-import type { FrmValues } from "types";
+import { useMatrixForm, useMatrixMethod } from "context/MatrixContext.tsx";
 
 export const FormArguments = () => {
     const [isErrorRow, setIsErrorRow] = useState<boolean>(false);
@@ -13,26 +12,32 @@ export const FormArguments = () => {
     const MAX_COUNT: number = 100;
 
     const {
-        data: {
-            MIN_CEL_COUNT,
-            MAX_CEL_COUNT,
-            amount,
-            rows,
-            cols,
-        },
-        method: {
-            generateMatrix,
-            setAmount,
-            setRows,
-            setCols,
-        }
-    } = useMatrix();
+        MIN_CEL_COUNT,
+        MAX_CEL_COUNT,
+        amount,
+        rows,
+        cols,
+        generateMatrix
+    } = useMatrixForm();
+    const {
+        setAmount,
+        setRows,
+        setCols,
+    } = useMatrixMethod();
 
-    const handleChangeRowsCols = (value: string, setValue: (val: FrmValues) => void) => {
-        setValue(value === '' ? null : +value)
-    }
+    const handleChangeRows = useCallback((value: string) => {
+        setRows(value === '' ? null : +value)
+    }, [setRows])
 
-    const handleSubmit = (): void => {
+    const handleChangeCols = useCallback((value: string) => {
+        setCols(value === '' ? null : +value)
+    }, [setCols])
+
+    const handleAmountChange = useCallback((value: string): void => {
+        setAmount(value === '' ? null : +value);
+    }, [setAmount])
+
+    const handleSubmit = useCallback((): void => {
         const checkRows = rows !== null && rows >= MIN_COUNT && rows <= MAX_COUNT;
         const checkCols = cols !== null && cols >= MIN_COUNT && cols <= MAX_COUNT;
 
@@ -42,7 +47,7 @@ export const FormArguments = () => {
 
         setIsErrorRow(!checkRows);
         setIsErrorColl(!checkCols);
-    }
+    }, [rows, cols, MIN_COUNT, MAX_COUNT])
 
     useEffect(() => {
         if (rows === null || cols === null) {
@@ -54,10 +59,6 @@ export const FormArguments = () => {
             setAmount(maxAmount);
         }
     }, [rows, cols, amount]);
-
-    const handleAmountChange = (value: number | null): void => {
-        setAmount(value);
-    }
 
     return (
         <div className={styles.formArguments}>
@@ -71,7 +72,7 @@ export const FormArguments = () => {
                         isError={isErrorRow}
                         min={MIN_COUNT}
                         max={MAX_COUNT}
-                        inputChange={(value) => handleChangeRowsCols(value, setRows)}
+                        inputChange={handleChangeRows}
                         label="Number of rows (M)"
                         description="Enter the number of rows, from 0 to 100."
                         placeholder="e.g., 10"
@@ -84,7 +85,7 @@ export const FormArguments = () => {
                         isError={isErrorColl}
                         min={MIN_COUNT}
                         max={MAX_COUNT}
-                        inputChange={(value) => handleChangeRowsCols(value, setCols)}
+                        inputChange={handleChangeCols}
                         label="Number of columns (N)"
                         description="Enter the number of columns, from 0 to 100."
                         placeholder="e.g., 15"
@@ -102,7 +103,7 @@ export const FormArguments = () => {
                         value={amount === null ? '' : amount}
                         min={MIN_COUNT}
                         {...(rows !== null && cols !== null && {max: rows * cols})}
-                        inputChange={(value) => handleAmountChange(value === '' ? null : +value)}
+                        inputChange={handleAmountChange}
                         label="Highlight count (X)"
                         description="The number of nearest cells by value to highlight on hover."
                         placeholder="e.g., 5"

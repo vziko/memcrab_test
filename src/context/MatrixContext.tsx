@@ -1,30 +1,34 @@
-import { createContext, type ReactNode, useContext, useRef, useState } from "react";
+import { createContext, type ReactNode, useCallback, useContext, useMemo, useRef, useState } from "react";
 import type { FrmValues, MatrixTableCellTypes } from "types";
 import { getRandom } from "utils";
 
-interface MatrixContextType {
-    data: {
-        MIN_CEL_COUNT: number;
-        MAX_CEL_COUNT: number;
-        matrix: MatrixTableCellTypes[][];
-        amount: FrmValues;
-        amountList: MatrixTableCellTypes[];
-        rows: FrmValues;
-        cols: FrmValues;
-    }
-    method: {
-        generateMatrix: () => void;
-        addRow: () => void;
-        removeRow: (rowIndex: number) => void;
-        incrementCellAmount: (rowIndex: number, collIndex: number) => void;
-        createAmountList: (cell:  MatrixTableCellTypes | null) => void;
-        setAmount: (amount: FrmValues) => void;
-        setRows: (rows: FrmValues) => void;
-        setCols: (cols: FrmValues) => void;
-    }
+interface MatrixContextDataTableType {
+    matrix: MatrixTableCellTypes[][];
+    amountList: MatrixTableCellTypes[];
+    createAmountList: (cell:  MatrixTableCellTypes | null) => void;
 }
 
-const MatrixContext = createContext<MatrixContextType | undefined>(undefined);
+interface MatrixContextDataFormType {
+    MIN_CEL_COUNT: number;
+    MAX_CEL_COUNT: number;
+    amount: FrmValues;
+    rows: FrmValues;
+    cols: FrmValues;
+    generateMatrix: () => void;
+}
+
+interface MatrixContextMethodType {
+    addRow: () => void;
+    removeRow: (rowIndex: number) => void;
+    incrementCellAmount: (rowIndex: number, collIndex: number) => void;
+    setAmount: (amount: FrmValues) => void;
+    setRows: (rows: FrmValues) => void;
+    setCols: (cols: FrmValues) => void;
+}
+
+const MatrixContextDataTable = createContext<MatrixContextDataTableType | undefined>(undefined);
+const MatrixContextDataForm = createContext<MatrixContextDataFormType | undefined>(undefined);
+const MatrixContextMethod = createContext<MatrixContextMethodType | undefined>(undefined);
 
 interface MatrixProviderProps {
     children: ReactNode;
@@ -40,7 +44,7 @@ export const MatrixProvider = ({ children }: MatrixProviderProps) => {
     const [amountList, setAmountList] = useState<MatrixTableCellTypes[]>([]);
     const nextCellId = useRef<number>(0);
 
-    const generateMatrix = () => {
+    const generateMatrix = useCallback(() => {
         const newMatrix: MatrixTableCellTypes[][] = [];
 
         for (let i = 0; i < (rows ? rows : 0); i++) {
@@ -54,9 +58,9 @@ export const MatrixProvider = ({ children }: MatrixProviderProps) => {
         }
 
         setMatrix(newMatrix);
-    };
+    }, [rows, cols, MIN_CEL_COUNT, MAX_CEL_COUNT]);
 
-    const addRow = () => {
+    const addRow = useCallback(() => {
         const newRowMatrix: MatrixTableCellTypes[] = [];
         matrix[0].forEach(() => {
             newRowMatrix.push({
@@ -64,77 +68,127 @@ export const MatrixProvider = ({ children }: MatrixProviderProps) => {
                 amount: getRandom(MIN_CEL_COUNT, MAX_CEL_COUNT),
             });
         })
-        setMatrix([...matrix, newRowMatrix]);
-    };
+        setMatrix((prevMatrix) => [...prevMatrix, newRowMatrix]);
+    }, []);
 
-    const removeRow = (rowIndex: number) => {
-        setMatrix(matrix.filter((_, index) => index !== rowIndex));
-    };
+    const removeRow = useCallback((rowIndex: number) => {
+        setMatrix((prevMatrix) => prevMatrix.filter((_, index) => index !== rowIndex));
+    }, []);
 
-    const incrementCellAmount = (rowIndex: number, colIndex: number) => {
-        const newMatrix = matrix.map((row, rIndex) => {
-            if (rIndex !== rowIndex) {
-                return row;
-            }
-            return row.map((cell, cIndex) => {
-                if (cIndex !== colIndex) {
-                    return cell;
+    const incrementCellAmount = useCallback((rowIndex: number, colIndex: number) => {
+        setMatrix((prevMatrix) => {
+            return prevMatrix.map((row, rIndex) => {
+                if (rIndex !== rowIndex) {
+                    return row;
                 }
-                return {
-                    ...cell,
-                    amount: cell.amount + 1
-                };
+                return row.map((cell, cIndex) => {
+                    if (cIndex !== colIndex) {
+                        return cell;
+                    }
+                    return {
+                        ...cell,
+                        amount: cell.amount + 1
+                    };
+                });
             });
         });
-        setMatrix(newMatrix);
-    };
+    }, []);
 
-    const createAmountList = (cellMatrix: MatrixTableCellTypes | null) => {
+    const allCells = useMemo(() => matrix.flat(), [matrix]);
+
+    const createAmountList = useCallback((cellMatrix: MatrixTableCellTypes | null) => {
         if(!cellMatrix || !amount) {
-            setAmountList([])
+            setAmountList((prevAmounts) => prevAmounts.length > 0 ? [] : prevAmounts);
         } else {
-            const allCells = matrix.flat();
-            const otherCells = allCells.filter(c => c.id !== cellMatrix.id);
-            otherCells.sort((a, b) => {
-                const aNew = Math.abs(cellMatrix.amount - a.amount);
-                const bNew = Math.abs(cellMatrix.amount - b.amount);
-                return aNew - bNew;
-            });
-            setAmountList(otherCells.slice(0, amount));
-        }
-    }
+            const newMatrix: (MatrixTableCellTypes & {diff: number})[] = [];
+            allCells.forEach((cell) => {
+                if(cell.id !== cellMatrix.id) {
+                    newMatrix.push({
+                        ...cell,
+                        diff:  Math.abs(cellMatrix.amount - cell.amount)
+                    })
+                }
+            })
 
-    const value = {
-        data: {
+            newMatrix.sort((a, b) => a.diff - b.diff);
+            setAmountList(newMatrix.slice(0, amount));
+        }
+    }, [allCells, amount])
+
+    const dataTable = useMemo(() => ({
+        matrix,
+        amountList,
+        createAmountList
+    }), [
+        matrix,
+        amountList,
+        createAmountList
+        ]
+    );
+
+    const dataForm = useMemo(() => ({
             MIN_CEL_COUNT,
             MAX_CEL_COUNT,
-            matrix,
             amount,
-            amountList,
             rows,
             cols,
-        },
-        method: {
             generateMatrix,
+        }), [
+            MIN_CEL_COUNT,
+            MAX_CEL_COUNT,
+            amount,
+            rows,
+            cols,
+            generateMatrix,
+        ]
+    );
+
+    const method = useMemo(
+        () => ({
             addRow,
             removeRow,
             incrementCellAmount,
-            createAmountList,
             setAmount,
             setRows,
             setCols,
-        }
-    };
+    }), [
+        addRow,
+        removeRow,
+        incrementCellAmount,
+        setAmount,
+        setRows,
+        setCols,
+    ]);
 
     return (
-        <MatrixContext.Provider value={value}>
-            {children}
-        </MatrixContext.Provider>
+        <MatrixContextDataTable.Provider value={dataTable}>
+            <MatrixContextDataForm.Provider value={dataForm}>
+                <MatrixContextMethod.Provider value={method}>
+                    {children}
+                </MatrixContextMethod.Provider>
+            </MatrixContextDataForm.Provider>
+        </MatrixContextDataTable.Provider>
     );
 };
 
-export const useMatrix = () => {
-    const context = useContext(MatrixContext);
+export const useMatrixTable = () => {
+    const context = useContext(MatrixContextDataTable);
+    if (context === undefined) {
+        throw new Error('useMatrix must be used within a MatrixProvider');
+    }
+    return context;
+};
+
+export const useMatrixForm = () => {
+    const context = useContext(MatrixContextDataForm);
+    if (context === undefined) {
+        throw new Error('useMatrix must be used within a MatrixProvider');
+    }
+    return context;
+};
+
+export const useMatrixMethod = () => {
+    const context = useContext(MatrixContextMethod);
     if (context === undefined) {
         throw new Error('useMatrix must be used within a MatrixProvider');
     }

@@ -1,11 +1,11 @@
-import type { ComponentProps, ReactNode } from "react";
+import { type ComponentProps, memo, type ReactNode } from "react";
 import styles from './Button.module.scss'
 
 interface ButtonProps extends ComponentProps<'button'> {
     children: ReactNode;
 }
 
-export const Button = (props: ButtonProps) => {
+export const Button = memo<ButtonProps>((props) => {
     const {
         children,
         className = '',
@@ -19,4 +19,4 @@ export const Button = (props: ButtonProps) => {
             {children}
         </button>
     )
-}
+})
